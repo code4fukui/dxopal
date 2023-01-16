@@ -1,3 +1,4 @@
+export const Opal = {};
 (function(undefined) {
   // @note
   //   A few conventions for the documentation of this file:
@@ -31,10 +32,12 @@
   if (!('log' in console)) { console.log = function () {}; }
   if (!('warn' in console)) { console.warn = console.log; }
 
+  /*
   if (typeof(this.Opal) !== 'undefined') {
     console.warn('Opal already loaded. Loading twice can cause troubles, please fix your setup.');
     return this.Opal;
   }
+  */
 
   var nil;
 
@@ -52,7 +55,7 @@
   var Class;
 
   // The Opal object that is exposed globally
-  var Opal = this.Opal = {};
+  //var Opal = this.Opal = {};
 
   // This is a useful reference to global object inside ruby files
   Opal.global = global_object;
@@ -1863,7 +1866,7 @@
 
     // Try to make the browser pick the right name
     alias.displayName       = name;
-    alias.length            = body.length;
+    //alias.length            = body.length;
     alias.$$arity           = body.$$arity;
     alias.$$parameters      = body.$$parameters;
     alias.$$source_location = body.$$source_location;
@@ -18937,7 +18940,7 @@ Opal.modules["corelib/string/encoding"] = function(Opal) {
 
       if (encoding === self.encoding) { return self; }
 
-      self.encoding = encoding;
+      //self.encoding = encoding;
       return self;
     
     }, $String_force_encoding$33.$$arity = 1);
@@ -24708,7 +24711,7 @@ Opal.modules["dxopal/input"] = function(Opal) {
           (($a = $nesting[0].$$cvars['@@mouse_info']) == null ? nil : $a).x = ev.pageX - (($a = $nesting[0].$$cvars['@@canvas_x']) == null ? nil : $a);
           (($a = $nesting[0].$$cvars['@@mouse_info']) == null ? nil : $a).y = ev.pageY - (($a = $nesting[0].$$cvars['@@canvas_y']) == null ? nil : $a);
           // ev.button => ev.buttons
-          table = { 0: 1, 1: 4, 2: 2, 3: 8, 4: 16 };
+          const table = { 0: 1, 1: 4, 2: 2, 3: 8, 4: 16 };
           for (var k=1; k<=16; k<<=1) {
             if ((($a = $nesting[0].$$cvars['@@pressing_mouse_buttons']) == null ? nil : $a)[k]) {
               (($a = $nesting[0].$$cvars['@@pressing_mouse_buttons']) == null ? nil : $a)[table[ev.button]] = -(($a = $nesting[0].$$cvars['@@tick']) == null ? nil : $a);
@@ -26247,8 +26250,8 @@ Opal.modules["dxopal/sprite/collision_area"] = function(Opal) {
             var cos = Math.cos(rad);
             poss.forEach(function(pos){
               var x = pos[0], y = pos[1];
-              x2 = (x - cx) * sx * cos - (y - cy) * sy * sin + cx + ox;
-              y2 = (x - cx) * sx * sin + (y - cy) * sy * cos + cy + oy;
+              const x2 = (x - cx) * sx * cos - (y - cy) * sy * sin + cx + ox;
+              const y2 = (x - cx) * sx * sin + (y - cy) * sy * cos + cy + oy;
               ret.push([x2, y2]);
             });
           ;
@@ -26279,8 +26282,8 @@ Opal.modules["dxopal/sprite/collision_area"] = function(Opal) {
             var cos = Math.cos(rad);
             poss.forEach(function(pos){
               var x = pos[0], y = pos[1];
-              x2 = ((x - cx) * cos - (y - cy) * sin) / sx + cx;
-              y2 = ((x - cx) * sin + (y - cy) * cos) / sy + cy;
+              const x2 = ((x - cx) * cos - (y - cy) * sin) / sx + cx;
+              const y2 = ((x - cx) * sin + (y - cy) * cos) / sy + cy;
               ret.push([x2, y2]);
             });
           ;
