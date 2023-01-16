@@ -3,6 +3,11 @@
 Game development framework for [Opal](https://opalrb.com/),
 has similar API to [DXRuby](http://dxruby.osdn.jp/)
 
+## Demo
+
+- [triangles game in Ruby](https://code4fukui.github.io/dxopal-es/examples/es/triangles.html)
+- [call JavaScript function from Ruby](https://code4fukui.github.io/dxopal-es/examples/es/)
+
 ## How to use
 
 see https://yhara.github.io/dxopal/
