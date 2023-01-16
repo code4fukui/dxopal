@@ -1,7 +1,10 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
 
 <canvas id="dxopal-canvas"></canvas>
+<br>
+<button id=restart>restart</button>
 <button id=pause>pause</button>
+<button id=fullscreen>full screen</button>
 <div id="dxopal-errors"></div>
 
 <script type="module">
@@ -11,6 +14,10 @@ import { Opal } from "../../build/dxopal.js"
 const s = Opal.compile(`require 'dxopal'
 
 # Window.fps = 120
+
+$time = 10 * 60
+$point = 0
+$maxpoint = 0
 
 class Enemy < Sprite
   SIZE = 40
@@ -23,7 +30,7 @@ class Enemy < Sprite
     @img_hit = Image.new(SIZE, SIZE) 
     @img_hit.triangle_fill(0, 0, SIZE-1, 10, 10, SIZE-1, C_RED)
     self.collision = [0, 0, SIZE-1, 10, 10, SIZE-1]
-    @dy = rand(6) + 1
+    @dy = rand(60) / 10 + 1
     @drot = rand(8) + 1
     @hit = false
     @hitpoint = 10
@@ -35,17 +42,22 @@ class Enemy < Sprite
     other.vanish()
     if @hitpoint == 0
       self.vanish()
+      $point += 1
+      if $point > $maxpoint
+        $maxpoint = $point
+      end
     end
   end
 
   def update
     self.y += @dy
     if self.y >= Window.height
-      self.y = 0
+      self.vanish()
+    else
+      self.angle = (self.angle + @drot) % 360
+      self.image = @hit ? @img_hit : @img_normal
+      @hit = false
     end
-    self.angle = (self.angle + @drot) % 360
-    self.image = @hit ? @img_hit : @img_normal
-    @hit = false
   end
 end
 
@@ -63,7 +75,7 @@ class Bullet < Sprite
   end
 
   def shot(other)
-    #self.vanish
+    self.vanish
   end
 
   def update
@@ -93,11 +105,12 @@ class Player < Sprite
   attr_reader :bullets
 
   def make_bullets
-    (N_BULLETS - @bullets.length).times{ @bullets << Bullet.new(@x, @y) }
+    (N_BULLETS - @bullets.length).times{ @bullets << Bullet.new(@x + SIZE / 3, @y) }
   end
 
   def shot(other)
     @hit = true
+    self.vanish()
   end
 
   def update
@@ -108,8 +121,15 @@ class Player < Sprite
     self.y = Window.height if self.y > Window.height
     self.y = 0 if self.y < 0
 
+    #self.x = Input.mouse_pos_x - SIZE / 2
+    #self.y = Input.mouse_pos_y - SIZE - 2
+
     self.image = @hit ? @img_hit : @img_normal
     @hit = false
+  end
+
+  def hit(other)
+    self.vanish()
   end
 end
 
@@ -120,27 +140,45 @@ Window.load_resources do
   enemies = N_ENEMIES.times.map{ Enemy.new }
 
   Window.loop do
-    Window.draw_font(0, 0, "FPS: #{Window.real_fps}", Font.default)
+    Window.draw_font(0, 0, "FPS: #{Window.real_fps} TIME: #{$time} POINT: #{$point} MAX POINT: #{$maxpoint}", Font.default)
     sprites = [player] + player.bullets + enemies
     Sprite.draw(sprites)
-    #Sprite.check([player], enemies)
+    Sprite.check(enemies, player)
     Sprite.check(player.bullets, enemies)
     Sprite.update(sprites)
+    Sprite.clean([player])
     Sprite.clean(enemies)
     Sprite.clean(player.bullets)
 
-    rand(N_ENEMIES - enemies.length).times{ enemies << Enemy.new }
-    player.make_bullets
+    if $time > 0
+      rand(N_ENEMIES - enemies.length).times{ enemies << Enemy.new }
+      player.make_bullets
+      $time -= 1
+    else
+      if Input.key_down?(K_SPACE) or Input.mouse_down?(M_LBUTTON)
+        $time = 60 * 10
+        $point = 0
+      end
+    end
   end
 
   %x{
-    document.getElementById('pause').addEventListener('click', function(){
-      #{Window.paused? ? Window.resume : Window.pause}
-    });
+    pause.onclick = () => #{Window.paused? ? Window.resume : Window.pause};
+    restart.onclick = () => #{
+      $time = 60 * 10
+      $point = 0
+    }
   }
 end
 `);
 console.log(s);
 eval(s);
 
+fullscreen.onclick = () => document.getElementById("dxopal-canvas").requestFullscreen();
 </script>
+
+<style>
+body {
+  text-align: center;
+}
+</style>
