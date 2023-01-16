@@ -26,10 +26,16 @@ class Enemy < Sprite
     @dy = rand(6) + 1
     @drot = rand(8) + 1
     @hit = false
+    @hitpoint = 10
   end
 
   def hit(other)
     @hit = true
+    @hitpoint = @hitpoint - 1
+    other.vanish()
+    if @hitpoint == 0
+      self.vanish()
+    end
   end
 
   def update
