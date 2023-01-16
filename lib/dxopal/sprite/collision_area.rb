@@ -31,8 +31,8 @@ module DXOpal
             var cos = Math.cos(rad);
             poss.forEach(function(pos){
               var x = pos[0], y = pos[1];
-              x2 = (x - cx) * sx * cos - (y - cy) * sy * sin + cx + ox;
-              y2 = (x - cx) * sx * sin + (y - cy) * sy * cos + cy + oy;
+              const x2 = (x - cx) * sx * cos - (y - cy) * sy * sin + cx + ox;
+              const y2 = (x - cx) * sx * sin + (y - cy) * sy * cos + cy + oy;
               ret.push([x2, y2]);
             });
           }
@@ -58,8 +58,8 @@ module DXOpal
             var cos = Math.cos(rad);
             poss.forEach(function(pos){
               var x = pos[0], y = pos[1];
-              x2 = ((x - cx) * cos - (y - cy) * sin) / sx + cx;
-              y2 = ((x - cx) * sin + (y - cy) * cos) / sy + cy;
+              const x2 = ((x - cx) * cos - (y - cy) * sin) / sx + cx;
+              const y2 = ((x - cx) * sin + (y - cy) * cos) / sy + cy;
               ret.push([x2, y2]);
             });
           }
